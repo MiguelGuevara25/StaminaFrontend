@@ -18,15 +18,13 @@ import {
 } from "./ui/dialog";
 import { useState } from "react";
 import FormSubscription from "./FormSubscription";
+import { useUsersStore } from "@/store/users.store";
 
-interface TableUsersProps {
-  users: User[];
-  loadUsers: () => void;
-}
-
-const TableUsers = ({ users, loadUsers }: TableUsersProps) => {
+const TableUsers = () => {
   const [openSub, setOpenSub] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const { users } = useUsersStore();
 
   const handleOpenSubscription = (user: User) => {
     setSelectedUser(user);
@@ -95,7 +93,7 @@ const TableUsers = ({ users, loadUsers }: TableUsersProps) => {
             </DialogDescription>
           </DialogHeader>
           {selectedUser && (
-            <FormSubscription user={selectedUser} setOpen={setOpenSub} loadUsers={loadUsers} />
+            <FormSubscription selectedUser={selectedUser} setOpen={setOpenSub} />
           )}
         </DialogContent>
       </Dialog>

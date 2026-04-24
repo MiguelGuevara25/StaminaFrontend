@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import type { User } from "@/interfaces";
 import { Button } from "@/components/ui/button";
 import { IconUserPlus } from "@tabler/icons-react";
 import FormUser from "@/components/FormUser";
@@ -11,29 +10,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getUsers } from "@/services/user.service";
-import { toast } from "sonner";
+import { useUsersStore } from "@/store/users.store";
 
 const Users = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-
-  const loadUsers = async () => {
-    try {
-      const data = await getUsers();
-      setUsers(data);
-    } catch (error) {
-      console.error("Error al cargar socios", error);
-      toast.error("Error al cargar los socios");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { loading, fetchUsers } = useUsersStore();
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    fetchUsers();
+  }, [fetchUsers]);
 
   if (loading)
     return <div className="text-white p-10">Cargando socios de Stamina...</div>;
@@ -59,11 +44,11 @@ const Users = () => {
               Completa los datos para registrar un nuevo socio.
             </DialogDescription>
           </DialogHeader>
-          <FormUser loadUsers={loadUsers} setOpen={setOpen} />
+          <FormUser setOpen={setOpen} />
         </DialogContent>
       </Dialog>
 
-      <TableUsers users={users} loadUsers={loadUsers} />
+      <TableUsers />
     </div>
   );
 };

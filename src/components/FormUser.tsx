@@ -9,13 +9,13 @@ import { Input } from "./ui/input";
 
 import axios from "axios";
 import { toast } from "sonner";
+import { useUsersStore } from "@/store/users.store";
 
 interface FormUserProps {
-  loadUsers: () => void;
   setOpen: (open: boolean) => void;
 }
 
-const FormUser = ({ loadUsers, setOpen }: FormUserProps) => {
+const FormUser = ({ setOpen }: FormUserProps) => {
   const {
     register,
     handleSubmit,
@@ -25,12 +25,14 @@ const FormUser = ({ loadUsers, setOpen }: FormUserProps) => {
     resolver: zodResolver(userSchema),
   });
 
+  const { fetchUsers } = useUsersStore();
+
   const onSubmit = async (data: UserFormValues) => {
     try {
       await axios.post("http://localhost:8080/api/users", data);
       toast.success("Socio registrado con éxito", { position: "top-center" });
       reset();
-      loadUsers();
+      fetchUsers();
       setOpen(false);
     } catch (err) {
       console.error("Error al registrar socios", err);

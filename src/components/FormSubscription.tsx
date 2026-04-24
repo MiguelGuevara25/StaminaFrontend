@@ -2,7 +2,6 @@ import type { Plan, User } from "@/interfaces";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import api from "@/api/axios.config";
 import {
   Select,
   SelectContent,
@@ -23,18 +22,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createSubscription } from "@/services/subscription.service";
+import { getPlans } from "@/services/plan.service";
+import { useUsersStore } from "@/store/users.store";
 
 interface FormSubscriptionProps {
-  user: User;
+  selectedUser: User;
   setOpen: (open: boolean) => void;
-  loadUsers: () => void;
 }
 
-const FormSubscription = ({
-  user,
-  setOpen,
-  loadUsers,
-}: FormSubscriptionProps) => {
+const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
+  const { fetchUsers } = useUsersStore();
+
   const [plans, setPlans] = useState<Plan[]>([]);
 
   const {
@@ -49,8 +47,8 @@ const FormSubscription = ({
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const response = await api.get("/api/plans");
-        setPlans(response.data);
+        const data = await getPlans();
+        setPlans(data);
       } catch (err) {
         console.error(err);
         toast.error("Error al cargar los planes");
@@ -68,7 +66,7 @@ const FormSubscription = ({
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(addDays(data.startDate, plan.durationDays), "yyyy-MM-dd"),
       status: "ACTIVA",
-      user: { id: user.id },
+      user: { id: selectedUser.id },
       plan: { id: Number(data.plan) },
     };
 
@@ -78,7 +76,7 @@ const FormSubscription = ({
         position: "top-center",
       });
       reset();
-      loadUsers();
+      fetchUsers();
       setOpen(false);
     } catch (err) {
       console.error("Error al registrar sucripciones", err);

@@ -1,25 +1,24 @@
+import api from "@/api/axios.config";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { LoginData } from "@/interfaces";
-import axios from "axios";
+import { useAuthStore } from "@/store/auth.store";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<LoginData>();
+  const { setToken } = useAuthStore();
 
   const onSubmit = async (data: LoginData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/login",
-        data,
-      );
+      const response = await api.post("/auth/login", data);
       const token = response.data.token;
 
       if (token) {
-        localStorage.setItem("stamina_token", token);
+        setToken(token);
         navigate("/dashboard");
       }
     } catch (err) {
