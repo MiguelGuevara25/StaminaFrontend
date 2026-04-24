@@ -1,25 +1,12 @@
-import { useEffect, useState } from "react";
-import type { Plan } from "@/interfaces";
-import api from "../api/axios.config";
+import { usePlansStore } from "@/store/plans.store";
+import { useEffect } from "react";
 
 const Plans = () => {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchPlans = async () => {
-    try {
-      const response = await api.get("/api/plans");
-      setPlans(response.data);
-    } catch (error) {
-      console.error("Error al obtener los planes:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { plans, loading, fetchPlans } = usePlansStore();
 
   useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [fetchPlans]);
 
   if (loading)
     return <p className="text-white p-10">Cargando planes de Stamina...</p>;

@@ -1,5 +1,5 @@
-import type { Plan, User } from "@/interfaces";
-import { useEffect, useState } from "react";
+import type { User } from "@/interfaces";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import {
@@ -22,8 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addDays, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createSubscription } from "@/services/subscription.service";
-import { getPlans } from "@/services/plan.service";
 import { useUsersStore } from "@/store/users.store";
+import { usePlansStore } from "@/store/plans.store";
 
 interface FormSubscriptionProps {
   selectedUser: User;
@@ -33,7 +33,7 @@ interface FormSubscriptionProps {
 const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
   const { fetchUsers } = useUsersStore();
 
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const { plans, fetchPlans } = usePlansStore();
 
   const {
     reset,
@@ -45,16 +45,7 @@ const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
   });
 
   useEffect(() => {
-    const loadPlans = async () => {
-      try {
-        const data = await getPlans();
-        setPlans(data);
-      } catch (err) {
-        console.error(err);
-        toast.error("Error al cargar los planes");
-      }
-    };
-    loadPlans();
+    fetchPlans();
   }, []);
 
   const onSubmit = async (data: SubscriptionFormValues) => {
@@ -97,7 +88,7 @@ const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecciona un plan" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectGroup>
                     {plans.map((plan) => (
                       <SelectItem key={plan.id} value={plan.id.toString()}>

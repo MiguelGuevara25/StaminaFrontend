@@ -49,7 +49,7 @@ const AppSidebar = () => {
       title: "Principal",
       items: [
         { title: "Dashboard", url: "/dashboard", icon: IconLayoutDashboard },
-        { title: "Control de Acceso", url: "/check-in", icon: IconQrcode }, // El check-in de DNI
+        { title: "Control de Acceso", url: "/check-in", icon: IconQrcode },
         { title: "Socios", url: "/users", icon: IconUsers },
       ],
     },

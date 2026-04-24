@@ -1,7 +1,8 @@
+import { create } from "zustand";
+
 import type { User } from "@/interfaces";
 import { getUsers } from "@/services/user.service";
 import { toast } from "sonner";
-import { create } from "zustand";
 
 interface UsersState {
   users: User[];
