@@ -21,6 +21,7 @@ export interface Plan {
   name: string;
   price: number;
   durationDays: number;
+  description?: string;
 }
 
 export interface User {
@@ -31,6 +32,7 @@ export interface User {
   email: string;
   phone: string;
   status: string;
+  active: boolean;
 }
 
 export interface Subscription {

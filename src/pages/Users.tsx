@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useUsersStore } from "@/store/users.store";
+import TableSkeleton from "@/components/TableSkeleton";
 
 const Users = () => {
   const [open, setOpen] = useState(false);
@@ -20,18 +21,21 @@ const Users = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  if (loading)
-    return <div className="text-white p-10">Cargando socios de Stamina...</div>;
-
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Gestión de Socios</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Gestión de Socios</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Administra los socios de tu gimnasio
+          </p>
+        </div>
+
         <Button
-          onClick={() => setOpen(true)}
           className="text-black hover:bg-lime-500 cursor-pointer"
+          onClick={() => setOpen(true)}
         >
-          <IconUserPlus className="mr-2" size={20} />
+          <IconUserPlus className="" size={20} />
           Nuevo Socio
         </Button>
       </div>
@@ -48,7 +52,7 @@ const Users = () => {
         </DialogContent>
       </Dialog>
 
-      <TableUsers />
+      {loading ? <TableSkeleton /> : <TableUsers />}
     </div>
   );
 };

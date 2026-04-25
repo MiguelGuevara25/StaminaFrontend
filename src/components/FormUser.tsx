@@ -1,21 +1,21 @@
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { userSchema, type UserFormValues } from "@/schemas/user.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUsersStore } from "@/store/users.store";
 
 import { Field, FieldGroup, FieldLabel } from "./ui/field";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-
-import axios from "axios";
-import { toast } from "sonner";
-import { useUsersStore } from "@/store/users.store";
 
 interface FormUserProps {
   setOpen: (open: boolean) => void;
 }
 
 const FormUser = ({ setOpen }: FormUserProps) => {
+  const { addUser } = useUsersStore();
+
   const {
     register,
     handleSubmit,
@@ -25,14 +25,10 @@ const FormUser = ({ setOpen }: FormUserProps) => {
     resolver: zodResolver(userSchema),
   });
 
-  const { fetchUsers } = useUsersStore();
-
   const onSubmit = async (data: UserFormValues) => {
     try {
-      await axios.post("http://localhost:8080/api/users", data);
-      toast.success("Socio registrado con éxito", { position: "top-center" });
+      await addUser({ ...data, active: true });
       reset();
-      fetchUsers();
       setOpen(false);
     } catch (err) {
       console.error("Error al registrar socios", err);

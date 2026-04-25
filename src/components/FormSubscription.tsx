@@ -32,7 +32,6 @@ interface FormSubscriptionProps {
 
 const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
   const { fetchUsers } = useUsersStore();
-
   const { plans, fetchPlans } = usePlansStore();
 
   const {
