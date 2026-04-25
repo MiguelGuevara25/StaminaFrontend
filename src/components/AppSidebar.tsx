@@ -42,32 +42,35 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { Link } from "react-router";
+import { useAuthStore } from "@/store/auth.store";
+
+const navItems = [
+  {
+    title: "Principal",
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: IconLayoutDashboard },
+      { title: "Control de Acceso", url: "/check-in", icon: IconQrcode },
+      { title: "Socios", url: "/users", icon: IconUsers },
+    ],
+  },
+  {
+    title: "Gestión",
+    items: [
+      { title: "Membresías", url: "/plans", icon: IconTicket },
+      { title: "Suscripciones", url: "/subscriptions", icon: IconCreditCard },
+      { title: "Historial", url: "/attendance", icon: IconLogs },
+    ],
+  },
+];
 
 const AppSidebar = () => {
-  const navItems = [
-    {
-      title: "Principal",
-      items: [
-        { title: "Dashboard", url: "/dashboard", icon: IconLayoutDashboard },
-        { title: "Control de Acceso", url: "/check-in", icon: IconQrcode },
-        { title: "Socios", url: "/users", icon: IconUsers },
-      ],
-    },
-    {
-      title: "Gestión",
-      items: [
-        { title: "Membresías", url: "/plans", icon: IconTicket },
-        { title: "Suscripciones", url: "/subscriptions", icon: IconCreditCard },
-        { title: "Historial", url: "/attendance", icon: IconLogs },
-      ],
-    },
-  ];
+  const { user, logout } = useAuthStore();
+  const { isMobile } = useSidebar();
 
   const handleLogout = () => {
-    localStorage.removeItem("stamina_token");
+    logout();
     window.location.href = "/login";
   };
-  const { isMobile } = useSidebar();
 
   return (
     <Sidebar>
@@ -112,7 +115,7 @@ const AppSidebar = () => {
                       {items.map((item) => (
                         <SidebarMenuSubItem key={item.title}>
                           <SidebarMenuSubButton asChild>
-                            <Link to={item.url} >
+                            <Link to={item.url}>
                               {item.icon && <item.icon />}
                               <span>{item.title}</span>
                             </Link>
@@ -145,10 +148,10 @@ const AppSidebar = () => {
                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">Miguel</span>
-                    <span className="truncate text-xs">
-                      miguel_g1789@hotmail.com
+                    <span className="truncate font-medium">
+                      {user?.firstName} {user?.lastName}
                     </span>
+                    <span className="truncate text-xs">{user?.email}</span>
                   </div>
                   <IconSelector className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -171,11 +174,9 @@ const AppSidebar = () => {
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-medium">
-                        Miguel Guevara
+                        {user?.firstName} {user?.lastName}
                       </span>
-                      <span className="truncate text-xs">
-                        miguel_g1789@hotmail.com
-                      </span>
+                      <span className="truncate text-xs">{user?.email}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
@@ -183,7 +184,7 @@ const AppSidebar = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <IconRosetteDiscountCheck />
-                    Account
+                    Cuenta
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <IconBell />
@@ -193,7 +194,7 @@ const AppSidebar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <IconLogout />
-                  Log out
+                  Cerrar sesión
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

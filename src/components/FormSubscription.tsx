@@ -46,7 +46,7 @@ const FormSubscription = ({ selectedUser, setOpen }: FormSubscriptionProps) => {
 
   useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [fetchPlans]);
 
   const onSubmit = async (data: SubscriptionFormValues) => {
     const plan = plans.find((p) => p.id === Number(data.plan));
