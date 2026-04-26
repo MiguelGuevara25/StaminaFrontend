@@ -18,7 +18,7 @@ const Subscripcion = () => {
   }, [fetchSubscriptions]);
 
   const total = subscriptions.length;
-  const activas = subscriptions.filter((s) => s.status === "ACTIVA").length;
+  const activas = subscriptions.filter((s) => s.status === "ACTIVE").length;
   const porVencer = subscriptions.filter((s) =>
     isExpiringSoon(s.endDate),
   ).length;
