@@ -36,13 +36,28 @@ export interface User {
 }
 
 export interface Subscription {
+  id: number;
   startDate: string;
   endDate: string;
   status: string;
   user: {
     id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
   };
   plan: {
     id: number;
+    name: string;
+    durationDays: number;
+    price: number;
   };
+}
+
+export interface SubscriptionPayload {
+  startDate: string;
+  endDate: string;
+  status: string;
+  user: { id: number };
+  plan: { id: number };
 }

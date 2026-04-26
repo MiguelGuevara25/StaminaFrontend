@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Plans from "./pages/Plans";
 import Users from "./pages/Users";
 import Layout from "./layout/Layout";
+import Subscripcion from "./pages/Subscripcion";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/subscriptions" element={<Subscripcion />} />
           </Route>
         </Route>
 
