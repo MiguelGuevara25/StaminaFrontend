@@ -1,19 +1,20 @@
 import type { Plan } from "@/interfaces";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Separator } from "./ui/separator";
+} from "../ui/card";
+import { Separator } from "../ui/separator";
 
 interface PlanCardProps {
   plan: Plan;
+  handleOpenDialog: (edit?: boolean, plan?: Plan) => void;
 }
 
-const PlanCard = ({ plan }: PlanCardProps) => {
+const PlanCard = ({ plan, handleOpenDialog }: PlanCardProps) => {
   return (
     <Card className="flex flex-col">
       <CardHeader>
@@ -47,7 +48,11 @@ const PlanCard = ({ plan }: PlanCardProps) => {
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        <Button variant="outline" className="flex-1" disabled>
+        <Button
+          variant="outline"
+          className="flex-1"
+          onClick={() => handleOpenDialog(true, plan)}
+        >
           Editar
         </Button>
         <Button

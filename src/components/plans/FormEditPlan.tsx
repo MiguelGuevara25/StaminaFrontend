@@ -1,37 +1,44 @@
-import { Field, FieldGroup, FieldLabel } from "./ui/field";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import type { Plan } from "@/interfaces";
 import { planSchema, type PlanFormValues } from "@/schemas/plan.schema";
+import { usePlansStore } from "@/store/plans.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { usePlansStore } from "@/store/plans.store";
 import { toast } from "sonner";
-import { Textarea } from "./ui/textarea";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
 
-interface FormPlanProps {
+interface FormEditPlanProps {
   setOpen: (open: boolean) => void;
+  selectedPlan: Plan | null;
 }
 
-const FormPlan = ({ setOpen }: FormPlanProps) => {
-  const { addPlan } = usePlansStore();
+const FormEditPlan = ({ setOpen, selectedPlan }: FormEditPlanProps) => {
+  const { editPlan } = usePlansStore();
 
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<PlanFormValues>({
     resolver: zodResolver(planSchema),
+    defaultValues: {
+      name: selectedPlan?.name,
+      durationDays: selectedPlan?.durationDays,
+      price: selectedPlan?.price,
+      description: selectedPlan?.description ?? "",
+    },
   });
 
   const onSubmit = async (data: PlanFormValues) => {
+    if (!selectedPlan) return;
+
     try {
-      await addPlan(data);
-      reset();
+      await editPlan(selectedPlan.id, data);
       setOpen(false);
-    } catch (err) {
-      console.error("Error al crear plan", err);
-      toast.error("Error al crear el plan");
+    } catch {
+      toast.error("Error al actualizar el plan");
     }
   };
 
@@ -84,22 +91,17 @@ const FormPlan = ({ setOpen }: FormPlanProps) => {
             placeholder="Describe brevemente el plan..."
             rows={3}
           />
-          {errors.description && (
-            <span className="text-red-500 text-xs">
-              {errors.description.message}
-            </span>
-          )}
         </Field>
 
         <Button
           type="submit"
           className="w-full cursor-pointer hover:bg-lime-500"
         >
-          Crear Plan
+          Guardar cambios
         </Button>
       </FieldGroup>
     </form>
   );
 };
 
-export default FormPlan;
+export default FormEditPlan;

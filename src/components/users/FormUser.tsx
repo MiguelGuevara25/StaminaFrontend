@@ -5,9 +5,9 @@ import { userSchema, type UserFormValues } from "@/schemas/user.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUsersStore } from "@/store/users.store";
 
-import { Field, FieldGroup, FieldLabel } from "./ui/field";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface FormUserProps {
   setOpen: (open: boolean) => void;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { createPlan, getPlans } from "@/services/plan.service";
+import { createPlan, getPlans, updatePlan } from "@/services/plan.service";
 import type { Plan } from "@/interfaces";
 import { toast } from "sonner";
 import type { PlanFormValues } from "@/schemas/plan.schema";
@@ -10,6 +10,7 @@ interface PlansState {
   loading: boolean;
   fetchPlans: () => Promise<void>;
   addPlan: (data: PlanFormValues) => Promise<void>;
+  editPlan: (id: number, data: PlanFormValues) => Promise<void>;
 }
 
 export const usePlansStore = create<PlansState>((set, get) => ({
@@ -33,6 +34,12 @@ export const usePlansStore = create<PlansState>((set, get) => ({
   addPlan: async (data) => {
     await createPlan(data);
     toast.success("Plan creado con éxito", { position: "top-center" });
+    get().fetchPlans();
+  },
+
+  editPlan: async (id: number, data: PlanFormValues) => {
+    await updatePlan(id, data);
+    toast.success("Plan actualizado con éxito", { position: "top-center" });
     get().fetchPlans();
   },
 }));

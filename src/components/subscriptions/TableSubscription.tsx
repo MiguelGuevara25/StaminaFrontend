@@ -6,11 +6,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Button } from "./ui/button";
+} from "../ui/table";
+import { Button } from "../ui/button";
 import { es } from "date-fns/locale";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 
 interface TableSubscriptioProps {
   isExpiringSoon: (endDate: string) => boolean;
@@ -64,7 +64,7 @@ const TableSubscription = ({ isExpiringSoon }: TableSubscriptioProps) => {
           >
             <TableCell>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium shrink-0">
                   {getInitials(sub.user.firstName, sub.user.lastName)}
                 </div>
                 <div>

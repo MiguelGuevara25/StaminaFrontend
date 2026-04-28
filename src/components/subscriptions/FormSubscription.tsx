@@ -1,7 +1,7 @@
 import type { User } from "@/interfaces";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
@@ -9,11 +9,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import { Controller, useForm } from "react-hook-form";
-import { Field, FieldGroup, FieldLabel } from "./ui/field";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar } from "./ui/calendar";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
 import {
   subscriptionSchema,
   type SubscriptionFormValues,

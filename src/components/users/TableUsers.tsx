@@ -7,17 +7,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { User } from "@/interfaces";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import { useState } from "react";
-import FormSubscription from "./FormSubscription";
+import FormSubscription from "../subscriptions/FormSubscription";
 import { useUsersStore } from "@/store/users.store";
 
 import {
@@ -38,12 +38,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
+import FormEditUser from "./FormEditUser";
 
 const columnHelper = createColumnHelper<User>();
 
 const TableUsers = () => {
   const [openSub, setOpenSub] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const { users, fetchUsers, desactivateUser } = useUsersStore();
@@ -51,6 +53,11 @@ const TableUsers = () => {
   const handleOpenSubscription = (user: User) => {
     setSelectedUser(user);
     setOpenSub(true);
+  };
+
+  const handleOpenEdit = (user: User) => {
+    setSelectedUser(user);
+    setOpenEdit(true);
   };
 
   const handleDesactivate = async (id: number) => {
@@ -102,14 +109,24 @@ const TableUsers = () => {
       header: () => <span className="flex justify-end">Acciones</span>,
       cell: ({ row }) => (
         <div className="flex justify-end space-x-2">
-          <Button onClick={() => handleOpenSubscription(row.original)}>
+          <Button
+            className="text-black cursor-pointer hover:bg-lime-500"
+            onClick={() => handleOpenSubscription(row.original)}
+          >
             Suscripción
           </Button>
-          <Button className="text-black">Editar</Button>
+          <Button
+            className="text-black cursor-pointer hover:bg-lime-500"
+            onClick={() => handleOpenEdit(row.original)}
+          >
+            Editar
+          </Button>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="cursor-pointer" variant="destructive">Eliminar</Button>
+              <Button className="cursor-pointer" variant="destructive">
+                Eliminar
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -202,6 +219,18 @@ const TableUsers = () => {
           </Button>
         </div>
       </div>
+
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Editar Socio</DialogTitle>
+            <DialogDescription>Modifica los datos del socio.</DialogDescription>
+          </DialogHeader>
+          {selectedUser && (
+            <FormEditUser user={selectedUser} setOpen={setOpenEdit} />
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={openSub} onOpenChange={setOpenSub}>
         <DialogContent className="sm:max-w-xl">

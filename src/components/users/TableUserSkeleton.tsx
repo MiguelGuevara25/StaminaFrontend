@@ -1,6 +1,6 @@
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
-const TableSkeleton = () => {
+const TableUserSkeleton = () => {
   return (
     <div className="space-y-3">
       {/* Header */}
@@ -22,4 +22,4 @@ const TableSkeleton = () => {
   );
 };
 
-export default TableSkeleton;
+export default TableUserSkeleton;

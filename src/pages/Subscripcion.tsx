@@ -1,5 +1,5 @@
-import TableSubscription from "@/components/TableSubscription";
-import TableSubscriptionSkeleton from "@/components/TableSubscriptionSkeleton";
+import TableSubscription from "@/components/subscriptions/TableSubscription";
+import TableSubscriptionSkeleton from "@/components/subscriptions/TableSubscriptionSkeleton";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
 import { differenceInDays } from "date-fns";
 import { useEffect } from "react";

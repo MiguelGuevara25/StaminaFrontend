@@ -1,19 +1,31 @@
-import FormPlan from "@/components/FormPlan";
-import PlanCard from "@/components/PlanCard";
-import PlanCardSkeleton from "@/components/PlanCardSkeleton";
+import DialogPlan from "@/components/dialogs/plans/DialogPlan";
+import PlanCard from "@/components/plans/PlanCard";
+import PlanCardSkeleton from "@/components/plans/PlanCardSkeleton";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import type { Plan } from "@/interfaces";
 import { usePlansStore } from "@/store/plans.store";
 import { useEffect, useState } from "react";
 
 const Plans = () => {
   const [open, setOpen] = useState(false);
+  const [editPlan, setEditPlan] = useState(false);
   const { plans, loading, fetchPlans } = usePlansStore();
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   useEffect(() => {
     fetchPlans();
   }, [fetchPlans]);
+
+  const handleOpenDialog = (
+    edit: boolean = false,
+    data: Plan | null = null,
+  ) => {
+    setEditPlan(edit);
+    setOpen(true);
+    setSelectedPlan(data);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -26,23 +38,11 @@ const Plans = () => {
         </div>
         <Button
           className="text-black hover:bg-lime-500 cursor-pointer"
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenDialog()}
         >
           + Nuevo Plan
         </Button>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Nuevo Plan</DialogTitle>
-            <DialogDescription>
-              Completa los datos para crear un nuevo plan.
-            </DialogDescription>
-          </DialogHeader>
-          <FormPlan setOpen={setOpen} />
-        </DialogContent>
-      </Dialog>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
@@ -79,8 +79,21 @@ const Plans = () => {
           ? Array.from({ length: 4 }).map((_, i) => (
               <PlanCardSkeleton key={i} />
             ))
-          : plans.map((plan) => <PlanCard key={plan.id} plan={plan} />)}
+          : plans.map((plan) => (
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                handleOpenDialog={handleOpenDialog}
+              />
+            ))}
       </div>
+
+      <DialogPlan
+        open={open}
+        setOpen={setOpen}
+        editPlan={editPlan}
+        selectedPlan={selectedPlan}
+      />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
-import { Separator } from "./ui/separator";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { Separator } from "../ui/separator";
 
 const PlanCardSkeleton = () => {
   return (

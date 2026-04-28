@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IconUserPlus } from "@tabler/icons-react";
-import FormUser from "@/components/FormUser";
-import TableUsers from "@/components/TableUsers";
+import FormUser from "@/components/users/FormUser";
+import TableUsers from "@/components/users/TableUsers";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useUsersStore } from "@/store/users.store";
-import TableSkeleton from "@/components/TableSkeleton";
+import TableUserSkeleton from "@/components/users/TableUserSkeleton";
 
 const Users = () => {
   const [open, setOpen] = useState(false);
@@ -52,7 +52,7 @@ const Users = () => {
         </DialogContent>
       </Dialog>
 
-      {loading ? <TableSkeleton /> : <TableUsers />}
+      {loading ? <TableUserSkeleton /> : <TableUsers />}
     </div>
   );
 };
