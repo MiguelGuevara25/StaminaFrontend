@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Title from "@/shared/Title";
 import { useAuthStore } from "@/store/auth.store";
 import { useNavigate } from "react-router";
 
@@ -26,12 +27,7 @@ const Profile = () => {
 
   return (
     <section className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Mi perfil</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Información de tu cuenta
-        </p>
-      </div>
+      <Title title="Mi perfil" subtitle="Información de tu cuenta"  />
 
       {/* Información */}
       <Card>

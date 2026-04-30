@@ -6,6 +6,7 @@ import { useUsersStore } from "@/store/users.store";
 import TableUserSkeleton from "@/components/users/TableUserSkeleton";
 import DialogUser from "@/components/dialogs/users/DialogUser";
 import type { User } from "@/interfaces";
+import Title from "@/shared/Title";
 
 const Users = () => {
   const [open, setOpen] = useState(false);
@@ -29,12 +30,10 @@ const Users = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Gestión de Socios</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Administra los socios de tu gimnasio
-          </p>
-        </div>
+        <Title
+          title="Gestión de Socios"
+          subtitle="Administra los socios de tu gimnasio"
+        />
 
         <Button
           className="text-black hover:bg-lime-500 cursor-pointer"

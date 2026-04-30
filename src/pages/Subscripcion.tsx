@@ -1,5 +1,6 @@
 import TableSubscription from "@/components/subscriptions/TableSubscription";
 import TableSubscriptionSkeleton from "@/components/subscriptions/TableSubscriptionSkeleton";
+import Title from "@/shared/Title";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
 import { differenceInDays } from "date-fns";
 import { useEffect } from "react";
@@ -29,12 +30,10 @@ const Subscripcion = () => {
 
   return (
     <section className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Suscripciones</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Historial y estado de todas las suscripciones
-        </p>
-      </div>
+      <Title
+        title="Suscripciones"
+        subtitle="Historial y estado de todas las suscripciones"
+      />
 
       <div className="grid grid-cols-5 gap-3">
         <div className="bg-muted rounded-lg p-4">

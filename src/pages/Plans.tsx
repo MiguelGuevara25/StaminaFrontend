@@ -5,6 +5,7 @@ import PlanCardSkeleton from "@/components/plans/PlanCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Plan } from "@/interfaces";
+import Title from "@/shared/Title";
 import { usePlansStore } from "@/store/plans.store";
 import { useEffect, useState } from "react";
 
@@ -12,7 +13,7 @@ const Plans = () => {
   const [editPlan, setEditPlan] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [open, setOpen] = useState(false);
-  
+
   const { plans, loading, fetchPlans } = usePlansStore();
 
   useEffect(() => {
@@ -31,12 +32,11 @@ const Plans = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Gestión de Planes</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Administra los planes disponibles para tus socios
-          </p>
-        </div>
+        <Title
+          title="Gestión de Planes"
+          subtitle="Administra los planes disponibles para tus socios"
+        />
+
         <Button
           className="text-black hover:bg-lime-500 cursor-pointer"
           onClick={() => handleOpenDialog()}

@@ -1,58 +1,71 @@
-import AttendanceSkeleton from "@/components/attendances/AttendanceSkeleton";
-import TableAttendance from "@/components/attendances/TableAttendance";
+import { useEffect } from "react";
+
 import { useAttendancesStore } from "@/store/attendances.store";
 import { isThisMonth, isThisWeek, isToday } from "date-fns";
-import { useEffect } from "react";
+
+import TableAttendanceSkeleton from "@/components/attendances/TableAttendanceSkeleton";
+import TableAttendance from "@/components/attendances/TableAttendance";
+import Title from "@/shared/Title";
+import {
+  Card,
+  CardTitle,
+  CardHeader,
+  CardDescription,
+} from "@/components/ui/card";
 
 const Attendance = () => {
   const { attendances, loading, fetchAttendances } = useAttendancesStore();
 
   useEffect(() => {
     fetchAttendances();
-  }, []);
+  }, [fetchAttendances]);
 
   const total = attendances.length;
+
   const today = attendances.filter((a) =>
     isToday(new Date(a.entryDate)),
   ).length;
+
   const thisWeek = attendances.filter((a) =>
     isThisWeek(new Date(a.entryDate)),
   ).length;
+
   const thisMonth = attendances.filter((a) =>
     isThisMonth(new Date(a.entryDate)),
   ).length;
 
+  const metrics = [
+    { label: "Total asistencias", value: total },
+    { label: "Hoy", value: today, className: "text-green-500" },
+    { label: "Esta semana", value: thisWeek },
+    { label: "Este mes", value: thisMonth },
+  ];
+
   return (
     <section className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Historial de asistencias</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Registro de entradas al gimnasio
-        </p>
-      </div>
+      <Title
+        title="Historial de asistencias"
+        subtitle="Registro de entradas al gimnasio"
+      />
 
       {/* Métricas */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Total asistencias</p>
-          <p className="text-2xl font-medium mt-1">{total}</p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Hoy</p>
-          <p className="text-2xl font-medium mt-1 text-green-500">{today}</p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Esta semana</p>
-          <p className="text-2xl font-medium mt-1">{thisWeek}</p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Este mes</p>
-          <p className="text-2xl font-medium mt-1">{thisMonth}</p>
-        </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+        {metrics.map(({ label, value, className }, index) => (
+          <Card key={index} className="@container/card">
+            <CardHeader>
+              <CardDescription>{label}</CardDescription>
+              <CardTitle
+                className={`text-2xl font-semibold tabular-nums @[250px]/card:text-3xl ${className || ""}`}
+              >
+                {value}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
       </div>
 
       {/* Tabla */}
-      {loading ? <AttendanceSkeleton /> : <TableAttendance />}
+      {loading ? <TableAttendanceSkeleton /> : <TableAttendance />}
     </section>
   );
 };

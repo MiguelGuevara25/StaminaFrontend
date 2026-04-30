@@ -1,6 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 
-const AttendanceSkeleton = () => {
+const TableAttendanceSkeleton = () => {
   return (
     <div className="space-y-3">
       {Array.from({ length: 5 }).map((_, i) => (
@@ -10,4 +10,4 @@ const AttendanceSkeleton = () => {
   );
 };
 
-export default AttendanceSkeleton;
+export default TableAttendanceSkeleton;

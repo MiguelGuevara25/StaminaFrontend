@@ -20,6 +20,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Title from "@/shared/Title";
 
 const Dashboard = () => {
   const { users, fetchUsers } = useUsersStore();
@@ -100,12 +101,7 @@ const Dashboard = () => {
 
   return (
     <section className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Resumen general de Stamina
-        </p>
-      </div>
+      <Title title="Dashboard" subtitle="Resumen general de Stamina" />
 
       {/* Métricas */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
