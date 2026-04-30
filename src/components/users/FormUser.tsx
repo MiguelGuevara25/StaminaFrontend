@@ -26,6 +26,8 @@ const FormUser = ({ setOpen }: FormUserProps) => {
   });
 
   const onSubmit = async (data: UserFormValues) => {
+    console.log("Enviando info...");
+
     try {
       await addUser({ ...data, active: true });
       reset();

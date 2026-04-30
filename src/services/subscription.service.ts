@@ -10,3 +10,7 @@ export const createSubscription = async (payload: SubscriptionPayload) => {
   const response = await api.post("/api/subscriptions", payload);
   return response.data;
 };
+
+export const cancelSubscription = async (id: number): Promise<void> => {
+  await api.patch(`/api/subscriptions/${id}/cancel`);
+};

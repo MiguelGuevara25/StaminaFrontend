@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { createPlan, getPlans, updatePlan } from "@/services/plan.service";
+import { createPlan, desactivatePlan, getPlans, updatePlan } from "@/services/plan.service";
 import type { Plan } from "@/interfaces";
 import { toast } from "sonner";
 import type { PlanFormValues } from "@/schemas/plan.schema";
@@ -11,6 +11,7 @@ interface PlansState {
   fetchPlans: () => Promise<void>;
   addPlan: (data: PlanFormValues) => Promise<void>;
   editPlan: (id: number, data: PlanFormValues) => Promise<void>;
+  deletePlan: (id: number) => Promise<void>;
 }
 
 export const usePlansStore = create<PlansState>((set, get) => ({
@@ -42,4 +43,10 @@ export const usePlansStore = create<PlansState>((set, get) => ({
     toast.success("Plan actualizado con éxito", { position: "top-center" });
     get().fetchPlans();
   },
+
+  deletePlan: async (id: number) => {
+  await desactivatePlan(id);
+  toast.success("Plan eliminado correctamente", { position: "top-center" });
+  get().fetchPlans();
+},
 }));

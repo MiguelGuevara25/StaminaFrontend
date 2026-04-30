@@ -61,3 +61,9 @@ export interface SubscriptionPayload {
   user: { id: number };
   plan: { id: number };
 }
+
+export interface Attendance {
+  id: number;
+  entryDate: string;
+  user: User;
+}

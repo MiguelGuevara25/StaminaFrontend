@@ -1,16 +1,20 @@
 import { create } from "zustand";
 
 import type { Subscription } from "@/interfaces";
-import { getSubscriptions } from "@/services/subscription.service";
+import {
+  cancelSubscription,
+  getSubscriptions,
+} from "@/services/subscription.service";
 import { toast } from "sonner";
 
 interface SubscriptionsState {
   subscriptions: Subscription[];
   loading: boolean;
   fetchSubscriptions: () => Promise<void>;
+  cancelSubscription: (id: number) => Promise<void>;
 }
 
-export const useSubscriptionsStore = create<SubscriptionsState>((set) => ({
+export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
   subscriptions: [],
   loading: false,
 
@@ -26,5 +30,11 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  cancelSubscription: async (id: number) => {
+    await cancelSubscription(id);
+    toast.success("Suscripción cancelada correctamente");
+    get().fetchSubscriptions();
   },
 }));

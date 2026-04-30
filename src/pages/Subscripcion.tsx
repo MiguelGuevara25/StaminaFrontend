@@ -23,8 +23,9 @@ const Subscripcion = () => {
     isExpiringSoon(s.endDate),
   ).length;
   const canceladas = subscriptions.filter(
-    (s) => s.status === "CANCELADA",
+    (s) => s.status === "CANCELLED",
   ).length;
+  const expiradas = subscriptions.filter((s) => s.status === "EXPIRED").length;
 
   return (
     <section className="p-6 space-y-6">
@@ -35,7 +36,7 @@ const Subscripcion = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-5 gap-3">
         <div className="bg-muted rounded-lg p-4">
           <p className="text-sm text-muted-foreground">Total</p>
           <p className="text-2xl font-medium mt-1">{total}</p>
@@ -52,7 +53,13 @@ const Subscripcion = () => {
         </div>
         <div className="bg-muted rounded-lg p-4">
           <p className="text-sm text-muted-foreground">Canceladas</p>
-          <p className="text-2xl font-medium mt-1 text-red-500">{canceladas}</p>
+          <p className="text-2xl font-medium mt-1 text-yellow-500">
+            {canceladas}
+          </p>
+        </div>
+        <div className="bg-muted rounded-lg p-4">
+          <p className="text-sm text-muted-foreground">Expiradas</p>
+          <p className="text-2xl font-medium mt-1 text-red-500">{expiradas}</p>
         </div>
       </div>
 

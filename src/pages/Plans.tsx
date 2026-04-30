@@ -9,10 +9,11 @@ import { usePlansStore } from "@/store/plans.store";
 import { useEffect, useState } from "react";
 
 const Plans = () => {
-  const [open, setOpen] = useState(false);
   const [editPlan, setEditPlan] = useState(false);
-  const { plans, loading, fetchPlans } = usePlansStore();
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [open, setOpen] = useState(false);
+  
+  const { plans, loading, fetchPlans } = usePlansStore();
 
   useEffect(() => {
     fetchPlans();
