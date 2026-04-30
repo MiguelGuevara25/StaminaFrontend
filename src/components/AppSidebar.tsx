@@ -182,17 +182,25 @@ const AppSidebar = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <IconRosetteDiscountCheck />
-                    Cuenta
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <Link to="/profile">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <IconRosetteDiscountCheck />
+                      Cuenta
+                    </DropdownMenuItem>
+                  </Link>
+
+                  <DropdownMenuItem className="cursor-pointer">
                     <IconBell />
                     Notifications
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
+
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={handleLogout}
+                >
                   <IconLogout />
                   Cerrar sesión
                 </DropdownMenuItem>

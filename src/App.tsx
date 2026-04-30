@@ -7,6 +7,7 @@ import Users from "./pages/Users";
 import Layout from "./layout/Layout";
 import Subscripcion from "./pages/Subscripcion";
 import Attendance from "./pages/Attendance";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             <Route path="/subscriptions" element={<Subscripcion />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
 
