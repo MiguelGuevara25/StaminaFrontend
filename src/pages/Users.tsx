@@ -1,25 +1,30 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IconUserPlus } from "@tabler/icons-react";
-import FormUser from "@/components/users/FormUser";
 import TableUsers from "@/components/users/TableUsers";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useUsersStore } from "@/store/users.store";
 import TableUserSkeleton from "@/components/users/TableUserSkeleton";
+import DialogUser from "@/components/dialogs/users/DialogUser";
+import type { User } from "@/interfaces";
 
 const Users = () => {
   const [open, setOpen] = useState(false);
+  const [editUser, setEditUser] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { loading, fetchUsers } = useUsersStore();
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  const handleOpenDialog = (
+    edit: boolean = false,
+    data: User | null = null,
+  ) => {
+    setEditUser(edit);
+    setOpen(true);
+    setSelectedUser(data);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -33,26 +38,25 @@ const Users = () => {
 
         <Button
           className="text-black hover:bg-lime-500 cursor-pointer"
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenDialog()}
         >
-          <IconUserPlus className="" size={20} />
+          <IconUserPlus size={20} />
           Nuevo Socio
         </Button>
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Nuevo Socio</DialogTitle>
-            <DialogDescription>
-              Completa los datos para registrar un nuevo socio.
-            </DialogDescription>
-          </DialogHeader>
-          <FormUser setOpen={setOpen} />
-        </DialogContent>
-      </Dialog>
+      {loading ? (
+        <TableUserSkeleton />
+      ) : (
+        <TableUsers handleOpenDialog={handleOpenDialog} />
+      )}
 
-      {loading ? <TableUserSkeleton /> : <TableUsers />}
+      <DialogUser
+        open={open}
+        setOpen={setOpen}
+        editUser={editUser}
+        selectedUser={selectedUser}
+      />
     </div>
   );
 };

@@ -12,11 +12,11 @@ import type { User } from "@/interfaces";
 import { toast } from "sonner";
 
 interface FormEditUserProps {
-  user: User;
+  selectedUser: User | null;
   setOpen: (open: boolean) => void;
 }
 
-const FormEditUser = ({ user, setOpen }: FormEditUserProps) => {
+const FormEditUser = ({ selectedUser, setOpen }: FormEditUserProps) => {
   const { editUser } = useUsersStore();
 
   const {
@@ -26,17 +26,19 @@ const FormEditUser = ({ user, setOpen }: FormEditUserProps) => {
   } = useForm<EditUserFormValues>({
     resolver: zodResolver(editUserSchema),
     defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      dni: user.dni,
-      email: user.email,
-      phone: user.phone,
+      firstName: selectedUser?.firstName,
+      lastName: selectedUser?.lastName,
+      dni: selectedUser?.dni,
+      email: selectedUser?.email,
+      phone: selectedUser?.phone,
     },
   });
 
   const onSubmit = async (data: EditUserFormValues) => {
+    if (!selectedUser) return;
+
     try {
-      await editUser(user.id, data);
+      await editUser(selectedUser.id, data);
       setOpen(false);
     } catch {
       toast.error("Error al actualizar el socio");

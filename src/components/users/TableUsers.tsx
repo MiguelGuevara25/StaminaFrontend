@@ -39,13 +39,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import FormEditUser from "./FormEditUser";
 
 const columnHelper = createColumnHelper<User>();
 
-const TableUsers = () => {
+interface TableUserProps {
+  handleOpenDialog: (edit?: boolean, user?: User) => void;
+}
+
+const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
   const [openSub, setOpenSub] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const { users, fetchUsers, desactivateUser } = useUsersStore();
@@ -53,11 +55,6 @@ const TableUsers = () => {
   const handleOpenSubscription = (user: User) => {
     setSelectedUser(user);
     setOpenSub(true);
-  };
-
-  const handleOpenEdit = (user: User) => {
-    setSelectedUser(user);
-    setOpenEdit(true);
   };
 
   const handleDesactivate = async (id: number) => {
@@ -117,7 +114,7 @@ const TableUsers = () => {
           </Button>
           <Button
             className="text-black cursor-pointer hover:bg-lime-500"
-            onClick={() => handleOpenEdit(row.original)}
+            onClick={() => handleOpenDialog(true, row.original)}
           >
             Editar
           </Button>
@@ -219,18 +216,6 @@ const TableUsers = () => {
           </Button>
         </div>
       </div>
-
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Editar Socio</DialogTitle>
-            <DialogDescription>Modifica los datos del socio.</DialogDescription>
-          </DialogHeader>
-          {selectedUser && (
-            <FormEditUser user={selectedUser} setOpen={setOpenEdit} />
-          )}
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={openSub} onOpenChange={setOpenSub}>
         <DialogContent className="sm:max-w-xl">
