@@ -11,7 +11,7 @@ const Layout = () => {
         <Outlet />
       </SidebarInset>
 
-      <Toaster />
+      <Toaster richColors />
     </SidebarProvider>
   );
 };
