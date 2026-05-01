@@ -4,7 +4,13 @@ import { usePlansStore } from "@/store/plans.store";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
 import { useUsersStore } from "@/store/users.store";
 import { differenceInDays } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -31,7 +37,7 @@ const Dashboard = () => {
     fetchUsers();
     fetchPlans();
     fetchSubscriptions();
-  }, []);
+  }, [fetchUsers, fetchPlans, fetchSubscriptions]);
 
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.status === "ACTIVO").length;
@@ -99,38 +105,50 @@ const Dashboard = () => {
     value: { label: "Total" },
   };
 
+  const metrics = [
+    {
+      label: "Socios totales",
+      value: totalUsers,
+    },
+    {
+      label: "Socios activos",
+      value: activeUsers,
+      className: "text-green-500",
+    },
+    {
+      label: "Suscripciones activas",
+      value: activeSubs,
+      className: "text-green-500",
+    },
+    {
+      label: "Por vencer (7d)",
+      value: expiringSoon,
+      className: "text-yellow-500",
+    },
+    {
+      label: "Planes disponibles",
+      value: plans.length,
+    },
+  ];
+
   return (
     <section className="p-6 space-y-6">
       <Title title="Dashboard" subtitle="Resumen general de Stamina" />
 
       {/* Métricas */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Socios totales</p>
-          <p className="text-2xl font-medium mt-1">{totalUsers}</p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Socios activos</p>
-          <p className="text-2xl font-medium mt-1 text-green-500">
-            {activeUsers}
-          </p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Suscripciones activas</p>
-          <p className="text-2xl font-medium mt-1 text-green-500">
-            {activeSubs}
-          </p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Por vencer (7d)</p>
-          <p className="text-2xl font-medium mt-1 text-yellow-500">
-            {expiringSoon}
-          </p>
-        </div>
-        <div className="bg-muted rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">Planes disponibles</p>
-          <p className="text-2xl font-medium mt-1">{plans.length}</p>
-        </div>
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+        {metrics.map(({ label, value, className }, index) => (
+          <Card key={index} className="@container/card">
+            <CardHeader>
+              <CardDescription>{label}</CardDescription>
+              <CardTitle
+                className={`text-2xl font-semibold tabular-nums @[250px]/card:text-3xl ${className || ""}`}
+              >
+                {value}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
       </div>
 
       {/* Gráficos fila 1 */}
@@ -153,6 +171,7 @@ const Dashboard = () => {
                 </span>
               ))}
             </div>
+
             <ChartContainer config={chartConfig} className="h-50 w-full">
               <PieChart>
                 <Pie
@@ -179,6 +198,7 @@ const Dashboard = () => {
               Socios por estado
             </CardTitle>
           </CardHeader>
+
           <CardContent>
             <ChartContainer config={chartConfig} className="h-50 w-full">
               <BarChart data={usersStatusData} barSize={48}>
@@ -216,8 +236,9 @@ const Dashboard = () => {
               Suscripciones por plan
             </CardTitle>
           </CardHeader>
+
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <ChartContainer config={chartConfig} className="h-50 w-full">
               <BarChart data={subsByPlan} barSize={40}>
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -249,6 +270,7 @@ const Dashboard = () => {
               Suscripciones recientes
             </CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-3">
             {recentSubs.map((sub) => (
               <div

@@ -3,7 +3,12 @@ import PlanCard from "@/components/plans/PlanCard";
 import PlanCardSkeleton from "@/components/plans/PlanCardSkeleton";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { Plan } from "@/interfaces";
 import Title from "@/shared/Title";
 import { usePlansStore } from "@/store/plans.store";
@@ -29,6 +34,27 @@ const Plans = () => {
     setSelectedPlan(data);
   };
 
+  const metrics = [
+    {
+      label: "Total planes",
+      value: plans.length,
+    },
+    {
+      label: "Precio mínimo",
+      value:
+        plans.length > 0
+          ? `S/. ${Math.min(...plans.map((p) => p.price))}`
+          : "—",
+    },
+    {
+      label: "Precio máximo",
+      value:
+        plans.length > 0
+          ? `S/. ${Math.max(...plans.map((p) => p.price))}`
+          : "—",
+    },
+  ];
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -45,34 +71,18 @@ const Plans = () => {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <Card>
-          <CardContent className="pt-4">
-            <p className="text-sm text-muted-foreground">Total planes</p>
-            <p className="text-2xl font-medium mt-1">{plans.length}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <p className="text-sm text-muted-foreground">Precio mínimo</p>
-            <p className="text-2xl font-medium mt-1">
-              {plans.length > 0
-                ? `S/. ${Math.min(...plans.map((p) => p.price))}`
-                : "—"}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <p className="text-sm text-muted-foreground">Precio máximo</p>
-            <p className="text-2xl font-medium mt-1">
-              {plans.length > 0
-                ? `S/. ${Math.max(...plans.map((p) => p.price))}`
-                : "—"}
-            </p>
-          </CardContent>
-        </Card>
+      {/* Métricas */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+        {metrics.map(({ label, value }, index) => (
+          <Card key={index} className="@container/card">
+            <CardHeader>
+              <CardDescription>{label}</CardDescription>
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                {value}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
