@@ -28,17 +28,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
+import DialogDeleteUser from "../dialogs/users/DialogDeleteUser";
+import PaginationTable from "@/shared/PaginationTable";
 
 const columnHelper = createColumnHelper<User>();
 
@@ -119,33 +110,7 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
             Editar
           </Button>
 
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className="cursor-pointer" variant="destructive">
-                Eliminar
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta acción desactivará a{" "}
-                  <span className="font-semibold">
-                    {row.original.firstName} {row.original.lastName}
-                  </span>{" "}
-                  y no aparecerá en el listado.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => handleDesactivate(row.original.id)}
-                >
-                  Confirmar
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <DialogDeleteUser handleDesactivate={handleDesactivate} row={row} />
         </div>
       ),
     }),
@@ -193,29 +158,7 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
         </TableBody>
       </Table>
 
-      <div className="flex items-center justify-between mt-4">
-        <p className="text-sm text-zinc-400">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
-        </p>
-
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
-      </div>
+      <PaginationTable table={table} />
 
       <Dialog open={openSub} onOpenChange={setOpenSub}>
         <DialogContent className="sm:max-w-xl">

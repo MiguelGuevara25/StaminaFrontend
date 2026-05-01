@@ -7,21 +7,21 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Button } from "../ui/button";
 import { es } from "date-fns/locale";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
 import { Badge } from "../ui/badge";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import type { Subscription } from "@/interfaces";
+import DialogCancelSubscription from "../dialogs/subscriptions/DialogCancelSubscription";
+import PaginationTable from "@/shared/PaginationTable";
+
+const columnHelper = createColumnHelper<Subscription>();
 
 interface TableSubscriptioProps {
   isExpiringSoon: (endDate: string) => boolean;
@@ -59,100 +59,129 @@ const TableSubscription = ({ isExpiringSoon }: TableSubscriptioProps) => {
     return `${firstName[0]}${lastName[0]}`.toUpperCase();
   };
 
+  const columns = [
+    columnHelper.display({
+      id: "user",
+      header: "Socio",
+      cell: ({ row }) => {
+        const { lastName, firstName, email } = row.original.user;
+
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium shrink-0">
+              {getInitials(firstName, lastName)}
+            </div>
+            <div>
+              <p className="font-medium text-sm">
+                {firstName} {lastName}
+              </p>
+              <p className="text-xs text-muted-foreground">{email}</p>
+            </div>
+          </div>
+        );
+      },
+    }),
+
+    columnHelper.display({
+      id: "plan",
+      header: "Plan",
+      cell: ({ row }) => row.original.plan.name,
+    }),
+
+    columnHelper.display({
+      id: "startDate",
+      header: "Inicio",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {format(row.original.startDate, "dd/MM/yyyy", { locale: es })}
+        </span>
+      ),
+    }),
+
+    columnHelper.display({
+      id: "endDate",
+      header: "Vence",
+      cell: ({ row }) => (
+        <span
+          className={`font-medium ${
+            isExpiringSoon(row.original.endDate)
+              ? "text-yellow-600"
+              : "text-muted-foreground"
+          }`}
+        >
+          {format(row.original.endDate, "dd/MM/yyyy", { locale: es })}
+        </span>
+      ),
+    }),
+
+    columnHelper.display({
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => getStatusBadge(row.original.status),
+    }),
+
+    columnHelper.display({
+      id: "actions",
+      header: () => <span className="flex justify-end">Acciones</span>,
+
+      cell: ({ row }) => {
+        return (
+          <div className="flex justify-end">
+            <DialogCancelSubscription
+              row={row}
+              cancelSubscription={cancelSubscription}
+            />
+          </div>
+        );
+      },
+    }),
+  ];
+
+  const table = useReactTable({
+    data: subscriptions,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
+  });
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-muted-foreground">Socio</TableHead>
-          <TableHead className="text-muted-foreground">Plan</TableHead>
-          <TableHead className="text-muted-foreground">Inicio</TableHead>
-          <TableHead className="text-muted-foreground">Vence</TableHead>
-          <TableHead className="text-muted-foreground">Estado</TableHead>
-          <TableHead className="text-muted-foreground text-right">
-            Acciones
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {subscriptions.map((sub) => (
-          <TableRow
-            key={sub.id}
-            className={
-              isExpiringSoon(sub.endDate)
-                ? "bg-yellow-50 dark:bg-yellow-950/20"
-                : ""
-            }
-          >
-            <TableCell>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium shrink-0">
-                  {getInitials(sub.user.firstName, sub.user.lastName)}
-                </div>
-                <div>
-                  <p className="font-medium text-sm">
-                    {sub.user.firstName} {sub.user.lastName}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {sub.user.email}
-                  </p>
-                </div>
-              </div>
-            </TableCell>
-            <TableCell className="text-sm">{sub.plan.name}</TableCell>
-            <TableCell className="text-sm text-muted-foreground">
-              {format(new Date(sub.startDate), "dd/MM/yyyy", { locale: es })}
-            </TableCell>
-            <TableCell
-              className={`text-sm font-medium ${
-                isExpiringSoon(sub.endDate)
-                  ? "text-yellow-600"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {format(new Date(sub.endDate), "dd/MM/yyyy", { locale: es })}
-            </TableCell>
-            <TableCell>{getStatusBadge(sub.status)}</TableCell>
-            <TableCell className="text-right">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={
-                      sub.status === "CANCELLED" || sub.status === "EXPIRED"
-                    }
-                    className="text-red-500 border-red-300 hover:bg-red-500 hover:text-white disabled:opacity-40"
-                  >
-                    Cancelar
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>¿Cancelar suscripción?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Se cancelará la suscripción de{" "}
-                      <span className="font-semibold">
-                        {sub.user.firstName} {sub.user.lastName}
-                      </span>{" "}
-                      al plan{" "}
-                      <span className="font-semibold">{sub.plan.name}</span>.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Volver</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => cancelSubscription(sub.id)}
-                    >
-                      Confirmar
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="text-muted-foreground">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <PaginationTable table={table} />
+    </>
   );
 };
 
