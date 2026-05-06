@@ -1,4 +1,16 @@
+import { useMemo, useState } from "react";
+import { es } from "date-fns/locale";
 import { format } from "date-fns";
+
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -7,19 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { es } from "date-fns/locale";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
 import { Badge } from "../ui/badge";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+
 import type { Subscription } from "@/interfaces";
 import DialogCancelSubscription from "../dialogs/subscriptions/DialogCancelSubscription";
 import PaginationTable from "@/shared/PaginationTable";
+import FiltersSubscription from "./FiltersSubscription";
 
 const columnHelper = createColumnHelper<Subscription>();
 
@@ -28,6 +34,10 @@ interface TableSubscriptioProps {
 }
 
 const TableSubscription = ({ isExpiringSoon }: TableSubscriptioProps) => {
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [planFilter, setPlanFilter] = useState("ALL");
+
   const { subscriptions, cancelSubscription } = useSubscriptionsStore();
 
   const getStatusBadge = (status: string) => {
@@ -60,29 +70,31 @@ const TableSubscription = ({ isExpiringSoon }: TableSubscriptioProps) => {
   };
 
   const columns = [
-    columnHelper.display({
-      id: "user",
-      header: "Socio",
-      cell: ({ row }) => {
-        const { lastName, firstName, email } = row.original.user;
-
-        return (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium shrink-0">
-              {getInitials(firstName, lastName)}
+    columnHelper.accessor(
+      (row) => `${row.user.firstName} ${row.user.lastName}`,
+      {
+        id: "user",
+        header: "Socio",
+        cell: ({ row }) => {
+          const { lastName, firstName, email } = row.original.user;
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-lime-100 text-lime-800 flex items-center justify-center text-xs font-medium shrink-0">
+                {getInitials(firstName, lastName)}
+              </div>
+              <div>
+                <p className="font-medium text-sm">
+                  {firstName} {lastName}
+                </p>
+                <p className="text-xs text-muted-foreground">{email}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-sm">
-                {firstName} {lastName}
-              </p>
-              <p className="text-xs text-muted-foreground">{email}</p>
-            </div>
-          </div>
-        );
+          );
+        },
       },
-    }),
+    ),
 
-    columnHelper.display({
+    columnHelper.accessor((row) => row.plan.name, {
       id: "plan",
       header: "Plan",
       cell: ({ row }) => row.original.plan.name,
@@ -137,20 +149,44 @@ const TableSubscription = ({ isExpiringSoon }: TableSubscriptioProps) => {
     }),
   ];
 
+  const filteredSubscriptions = useMemo(
+    () =>
+      subscriptions
+        .filter((s) =>
+          statusFilter === "ALL" ? true : s.status === statusFilter,
+        )
+        .filter((s) =>
+          planFilter === "ALL" ? true : s.plan.name === planFilter,
+        ),
+    [subscriptions, statusFilter, planFilter],
+  );
+
   const table = useReactTable({
-    data: subscriptions,
+    data: filteredSubscriptions,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
     initialState: {
-      pagination: {
-        pageSize: 10,
-      },
+      pagination: { pageSize: 10 },
     },
   });
 
   return (
     <>
+      <FiltersSubscription
+        planFilter={planFilter}
+        globalFilter={globalFilter}
+        statusFilter={statusFilter}
+        setPlanFilter={setPlanFilter}
+        setGlobalFilter={setGlobalFilter}
+        setStatusFilter={setStatusFilter}
+      />
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -1,23 +1,29 @@
-import TableSubscription from "@/components/subscriptions/TableSubscription";
-import TableSubscriptionSkeleton from "@/components/subscriptions/TableSubscriptionSkeleton";
+import { useEffect } from "react";
+import { differenceInDays } from "date-fns";
+
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Title from "@/shared/Title";
+
+import TableSubscriptionSkeleton from "@/components/subscriptions/TableSubscriptionSkeleton";
+import TableSubscription from "@/components/subscriptions/TableSubscription";
 import { useSubscriptionsStore } from "@/store/subscriptions.store";
-import { differenceInDays } from "date-fns";
-import { useEffect } from "react";
+import { usePlansStore } from "@/store/plans.store";
+import Title from "@/shared/Title";
 
 const Subscripcion = () => {
   const { subscriptions, loading, fetchSubscriptions } =
     useSubscriptionsStore();
 
+  const { fetchPlans } = usePlansStore();
+
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+    fetchPlans();
+  }, [fetchSubscriptions, fetchPlans]);
 
   const isExpiringSoon = (endDate: string) => {
     const days = differenceInDays(new Date(endDate), new Date());

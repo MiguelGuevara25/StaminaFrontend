@@ -23,6 +23,7 @@ const FormLogin = () => {
         navigate("/dashboard");
       }
     } catch (err) {
+      console.error("Error al iniciar sesión", err);
       console.error(err);
     }
   };

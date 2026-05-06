@@ -4,6 +4,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,6 +25,15 @@ import {
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Input } from "../ui/input";
 
 const columnHelper = createColumnHelper<User>();
 
@@ -33,6 +43,7 @@ interface TableUserProps {
 
 const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
   const [openSub, setOpenSub] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const { users, desactivateUser } = useUsersStore();
@@ -102,6 +113,13 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: "includesString",
+    state: {
+      globalFilter,
+      pagination: { pageIndex: 0, pageSize: 10 },
+    },
+    onGlobalFilterChange: setGlobalFilter,
     initialState: {
       pagination: {
         pageSize: 10,
@@ -111,6 +129,26 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
 
   return (
     <>
+      <Select>
+        <SelectTrigger className="w-full max-w-48">
+          <SelectValue placeholder="Seleccione un estado" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="apple">Todos los estados</SelectItem>
+            <SelectItem value="ACTIVO">Activo</SelectItem>
+            <SelectItem value="INACTIVO">Inactivo</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Input
+        placeholder="Buscar por nombre o DNI..."
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        className="max-w-sm"
+      />
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
