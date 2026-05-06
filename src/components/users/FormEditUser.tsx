@@ -40,7 +40,9 @@ const FormEditUser = ({ selectedUser, setOpen }: FormEditUserProps) => {
     try {
       await editUser(selectedUser.id, data);
       setOpen(false);
-    } catch {
+      toast.success("Socio actualizado con éxito", { position: "top-center" });
+    } catch (error) {
+      console.error("Error al actualizar socio", error);
       toast.error("Error al actualizar el socio");
     }
   };
@@ -108,7 +110,7 @@ const FormEditUser = ({ selectedUser, setOpen }: FormEditUserProps) => {
             className="w-full cursor-pointer hover:bg-lime-500"
             type="submit"
           >
-            Guardar cambios
+            Editar socio
           </Button>
         </Field>
       </FieldGroup>

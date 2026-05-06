@@ -1,6 +1,11 @@
 import { create } from "zustand";
 
-import { createPlan, desactivatePlan, getPlans, updatePlan } from "@/services/plan.service";
+import {
+  createPlan,
+  desactivatePlan,
+  getPlans,
+  updatePlan,
+} from "@/services/plan.service";
 import type { Plan } from "@/interfaces";
 import { toast } from "sonner";
 import type { PlanFormValues } from "@/schemas/plan.schema";
@@ -34,19 +39,24 @@ export const usePlansStore = create<PlansState>((set, get) => ({
 
   addPlan: async (data) => {
     await createPlan(data);
-    toast.success("Plan creado con éxito", { position: "top-center" });
-    get().fetchPlans();
+    await get().fetchPlans();
   },
 
   editPlan: async (id: number, data: PlanFormValues) => {
     await updatePlan(id, data);
-    toast.success("Plan actualizado con éxito", { position: "top-center" });
-    get().fetchPlans();
+    await get().fetchPlans();
   },
 
   deletePlan: async (id: number) => {
-  await desactivatePlan(id);
-  toast.success("Plan eliminado correctamente", { position: "top-center" });
-  get().fetchPlans();
-},
+    try {
+      await desactivatePlan(id);
+      set((state) => ({
+        plans: state.plans.filter((p) => p.id !== id),
+      }));
+      toast.success("Plan eliminado correctamente", { position: "top-center" });
+    } catch (error) {
+      console.error("Error al eliminar plan", error);
+      toast.error("Error al eliminar el plan");
+    }
+  },
 }));

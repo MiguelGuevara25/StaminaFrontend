@@ -1,24 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import type { User } from "@/interfaces";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
 import { useState } from "react";
-import FormSubscription from "../subscriptions/FormSubscription";
-import { useUsersStore } from "@/store/users.store";
 
 import {
   createColumnHelper,
@@ -27,9 +7,23 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { toast } from "sonner";
+
+import DialogAsignPlanUser from "../dialogs/users/DialogAsignPlanUser";
 import DialogDeleteUser from "../dialogs/users/DialogDeleteUser";
 import PaginationTable from "@/shared/PaginationTable";
+import { useUsersStore } from "@/store/users.store";
+import type { User } from "@/interfaces";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 
 const columnHelper = createColumnHelper<User>();
 
@@ -41,24 +35,11 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
   const [openSub, setOpenSub] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const { users, fetchUsers, desactivateUser } = useUsersStore();
+  const { users, desactivateUser } = useUsersStore();
 
   const handleOpenSubscription = (user: User) => {
     setSelectedUser(user);
     setOpenSub(true);
-  };
-
-  const handleDesactivate = async (id: number) => {
-    try {
-      await desactivateUser(id);
-      toast.success("Socio eliminado correctamente", {
-        position: "top-center",
-      });
-      fetchUsers();
-    } catch (err) {
-      console.error("Error al eliminar socio", err);
-      toast.error("Error al eliminar el socio");
-    }
   };
 
   const columns = [
@@ -110,7 +91,7 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
             Editar
           </Button>
 
-          <DialogDeleteUser handleDesactivate={handleDesactivate} row={row} />
+          <DialogDeleteUser desactivateUser={desactivateUser} row={row} />
         </div>
       ),
     }),
@@ -160,26 +141,11 @@ const TableUsers = ({ handleOpenDialog }: TableUserProps) => {
 
       <PaginationTable table={table} />
 
-      <Dialog open={openSub} onOpenChange={setOpenSub}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>
-              Asignar Suscripción — {selectedUser?.firstName}{" "}
-              {selectedUser?.lastName}
-            </DialogTitle>
-
-            <DialogDescription>
-              Selecciona un plan y la fecha de inicio.
-            </DialogDescription>
-          </DialogHeader>
-          {selectedUser && (
-            <FormSubscription
-              selectedUser={selectedUser}
-              setOpen={setOpenSub}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <DialogAsignPlanUser
+        openSub={openSub}
+        setOpenSub={setOpenSub}
+        selectedUser={selectedUser}
+      />
     </>
   );
 };

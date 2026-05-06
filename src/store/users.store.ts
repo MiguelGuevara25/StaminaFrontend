@@ -38,24 +38,28 @@ export const useUsersStore = create<UsersState>((set, get) => ({
     }
   },
 
-  addUser: async (data) => {
+  addUser: async (data: UserFormValues) => {
     await createUser(data);
-    toast.success("Socio registrado con éxito", { position: "top-center" });
-    get().fetchUsers();
+    await get().fetchUsers();
   },
 
   editUser: async (id: number, data: EditUserFormValues) => {
     await updateUser(id, data);
-    toast.success("Socio actualizado con éxito", { position: "top-center" });
-    get().fetchUsers();
+    await get().fetchUsers();
   },
 
   desactivateUser: async (id: number) => {
     try {
       await desactivateUser(id);
+      set((state) => ({
+        users: state.users.filter((p) => p.id !== id),
+      }));
+      toast.success("Socio eliminado correctamente", {
+        position: "top-center",
+      });
     } catch (error) {
-      console.error("Error al desactivar socio", error);
-      toast.error("Error al desactivar el socio");
+      console.error("Error al eliminado socio", error);
+      toast.error("Error al eliminado el socio");
     }
   },
 }));

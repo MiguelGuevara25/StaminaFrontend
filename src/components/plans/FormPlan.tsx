@@ -27,6 +27,7 @@ const FormPlan = ({ setOpen }: FormPlanProps) => {
   const onSubmit = async (data: PlanFormValues) => {
     try {
       await addPlan(data);
+      toast.success("Plan creado con éxito", { position: "top-center" });
       reset();
       setOpen(false);
     } catch (err) {

@@ -14,7 +14,7 @@ interface SubscriptionsState {
   cancelSubscription: (id: number) => Promise<void>;
 }
 
-export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
+export const useSubscriptionsStore = create<SubscriptionsState>((set) => ({
   subscriptions: [],
   loading: false,
 
@@ -33,8 +33,17 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
   },
 
   cancelSubscription: async (id: number) => {
-    await cancelSubscription(id);
-    toast.success("Suscripción cancelada correctamente");
-    get().fetchSubscriptions();
+    try {
+      await cancelSubscription(id);
+      set((state) => ({
+        subscriptions: state.subscriptions.filter((p) => p.id !== id),
+      }));
+      toast.success("Suscripción cancelada correctamente", {
+        position: "top-center",
+      });
+    } catch (error) {
+      console.error("Error al cancelar sucripciones", error);
+      toast.error("Error al cancelar la suscripción");
+    }
   },
 }));

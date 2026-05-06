@@ -15,14 +15,14 @@ const Subscripcion = () => {
   const { subscriptions, loading, fetchSubscriptions } =
     useSubscriptionsStore();
 
+  useEffect(() => {
+    fetchSubscriptions();
+  }, [fetchSubscriptions]);
+
   const isExpiringSoon = (endDate: string) => {
     const days = differenceInDays(new Date(endDate), new Date());
     return days >= 0 && days <= 7;
   };
-
-  useEffect(() => {
-    fetchSubscriptions();
-  }, [fetchSubscriptions]);
 
   const total = subscriptions.length;
   const activas = subscriptions.filter((s) => s.status === "ACTIVE").length;

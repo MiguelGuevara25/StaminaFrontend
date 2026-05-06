@@ -36,8 +36,10 @@ const FormEditPlan = ({ setOpen, selectedPlan }: FormEditPlanProps) => {
 
     try {
       await editPlan(selectedPlan.id, data);
+      toast.success("Plan actualizado con éxito", { position: "top-center" });
       setOpen(false);
-    } catch {
+    } catch (error) {
+      console.error("Error al actualizar plan", error);
       toast.error("Error al actualizar el plan");
     }
   };

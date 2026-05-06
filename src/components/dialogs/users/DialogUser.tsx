@@ -22,6 +22,7 @@ const DialogUser = ({
   editUser,
   selectedUser,
 }: DialogUserProps) => {
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-2xl">
@@ -34,12 +35,11 @@ const DialogUser = ({
           </DialogDescription>
         </DialogHeader>
 
-{editUser ? (
+        {editUser ? (
           <FormEditUser selectedUser={selectedUser} setOpen={setOpen} />
         ) : (
           <FormUser setOpen={setOpen} />
         )}
-
       </DialogContent>
     </Dialog>
   );

@@ -23,15 +23,17 @@ const FormUser = ({ setOpen }: FormUserProps) => {
     reset,
   } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
+    defaultValues: {
+      active: true,
+    },
   });
 
   const onSubmit = async (data: UserFormValues) => {
-    console.log("Enviando info...");
-
     try {
-      await addUser({ ...data, active: true });
+      await addUser(data);
       reset();
       setOpen(false);
+      toast.success("Socio registrado con éxito", { position: "top-center" });
     } catch (err) {
       console.error("Error al registrar socios", err);
       toast.error("Error al registrar el socio");
@@ -117,7 +119,7 @@ const FormUser = ({ setOpen }: FormUserProps) => {
 
         <Field>
           <Button className="cursor-pointer hover:bg-lime-500" type="submit">
-            Registrar Socio en Stamina
+            Registrar socio
           </Button>
         </Field>
       </FieldGroup>

@@ -1,3 +1,6 @@
+import { usePlansStore } from "@/store/plans.store";
+import type { Plan } from "@/interfaces";
+
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -10,38 +13,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { Row } from "@tanstack/react-table";
-import type { User } from "@/interfaces";
 
-interface DialogDeleteUserProps {
-  desactivateUser: (id: number) => void;
-  row: Row<User>;
-}
-
-const DialogDeleteUser = ({ desactivateUser, row }: DialogDeleteUserProps) => {
-  const { firstName, lastName, id } = row.original;
+const DialogDeletePlan = ({ plan }: { plan: Plan }) => {
+  const { deletePlan } = usePlansStore();
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="cursor-pointer" variant="destructive">
+        <Button className="flex-1 cursor-pointer" variant="destructive">
           Eliminar
         </Button>
       </AlertDialogTrigger>
+
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta acción desactivará a{" "}
-            <span className="font-semibold">
-              {firstName} {lastName}
-            </span>{" "}
-            y no aparecerá en el listado.
+            Esta acción desactivará el plan{" "}
+            <span className="font-semibold">{plan.name}</span> y no aparecerá en
+            el listado.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => desactivateUser(id)}>
+          <AlertDialogAction onClick={() => deletePlan(plan.id)}>
             Confirmar
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -50,4 +45,4 @@ const DialogDeleteUser = ({ desactivateUser, row }: DialogDeleteUserProps) => {
   );
 };
 
-export default DialogDeleteUser;
+export default DialogDeletePlan;

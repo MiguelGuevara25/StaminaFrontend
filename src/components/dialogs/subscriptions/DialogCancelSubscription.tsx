@@ -1,3 +1,6 @@
+import type { Row } from "@tanstack/react-table";
+import type { Subscription } from "@/interfaces";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,9 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import type { Subscription } from "@/interfaces";
-import type { Row } from "@tanstack/react-table";
 
 interface DialogCancelSubscriptionProps {
   cancelSubscription: (id: number) => void;

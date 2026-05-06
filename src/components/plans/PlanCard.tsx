@@ -1,4 +1,6 @@
 import type { Plan } from "@/interfaces";
+
+import DialogDeletePlan from "../dialogs/plans/DialogDeletePlan";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -8,20 +10,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Separator } from "../ui/separator";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import { toast } from "sonner";
-import { useUsersStore } from "@/store/users.store";
-import { usePlansStore } from "@/store/plans.store";
 
 interface PlanCardProps {
   plan: Plan;
@@ -29,22 +17,6 @@ interface PlanCardProps {
 }
 
 const PlanCard = ({ plan, handleOpenDialog }: PlanCardProps) => {
-  const { fetchUsers } = useUsersStore();
-  const { deletePlan } = usePlansStore();
-
-  const handleDesactivate = async (id: number) => {
-    try {
-      await deletePlan(id);
-      toast.success("Plan eliminado correctamente", {
-        position: "top-center",
-      });
-      fetchUsers();
-    } catch (err) {
-      console.error("Error al eliminar plan", err);
-      toast.error("Error al eliminar el plan");
-    }
-  };
-
   return (
     <Card className="flex flex-col">
       <CardHeader>
@@ -86,30 +58,7 @@ const PlanCard = ({ plan, handleOpenDialog }: PlanCardProps) => {
           Editar
         </Button>
 
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button className="flex-1 cursor-pointer" variant="destructive">
-              Eliminar
-            </Button>
-          </AlertDialogTrigger>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Esta acción desactivará el plan{" "}
-                <span className="font-semibold">{plan.name}</span> y no
-                aparecerá en el listado.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={() => handleDesactivate(plan.id)}>
-                Confirmar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <DialogDeletePlan plan={plan} />
       </CardFooter>
     </Card>
   );
